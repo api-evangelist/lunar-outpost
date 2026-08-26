@@ -1,0 +1,37 @@
+generated: '2026-08-25'
+method: probed
+source: https://www.lunaroutpost.com/_api/mcp
+summary: >-
+  Lunar Outpost documents no rate limits, and the one public surface returns no
+  rate-limit signalling headers. An agent calling this endpoint has no way to learn its
+  budget in advance or to discover it has been throttled other than by failing.
+limit_count: 0
+rate_limits: []
+documented: false
+docs: null
+response_headers:
+  observed: []
+  checked:
+    - X-RateLimit-Limit
+    - X-RateLimit-Remaining
+    - X-RateLimit-Reset
+    - RateLimit
+    - RateLimit-Policy
+    - Retry-After
+  detail: >-
+    Full response headers were captured from live 200 responses to POST initialize and
+    POST tools/list on 2026-08-25. None of the checked headers were present. The
+    response does carry cache-control, mcp-session-id, x-wix-request-id and Cloudflare
+    headers (cf-ray, cf-cache-status, report-to), but nothing conveying quota.
+exhaustion_status_code: unknown
+detail: >-
+  No published limit exists to record. Any effective throttling is imposed by the Wix
+  platform and Cloudflare in front of it, is undocumented, and is not Lunar Outpost's
+  stated policy. An honest zero: not measured as unlimited, measured as unstated.
+evidence:
+  - url: https://www.lunaroutpost.com/_api/mcp
+    status: 200
+    note: 'POST tools/list — no rate-limit headers in response'
+  - url: https://www.lunaroutpost.com/llms.txt
+    status: 200
+    note: 'Advertises the endpoint; states no limits'

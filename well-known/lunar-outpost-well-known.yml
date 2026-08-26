@@ -1,0 +1,56 @@
+generated: '2026-08-25'
+method: probed
+source: https://www.lunaroutpost.com/.well-known/
+summary: >-
+  Lunar Outpost serves NO /.well-known/ discovery documents. Every canonical path
+  returns HTTP 400 from the Wix platform error page, and a control probe of a
+  deliberately nonsensical path returned a byte-identical response — so this host
+  is a catch-all and none of these 400s should be read as a document. hit_count is
+  0 and NO WellKnown or SecurityTxt pointer is emitted in apis.yml.
+
+hit_count: 0
+
+hosts:
+  - host: https://www.lunaroutpost.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 400
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 400
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 400
+        file: null
+      - path: /.well-known/oauth-protected-resource
+        status: 400
+        file: null
+      - path: /.well-known/api-catalog
+        status: 400
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 400
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 400
+        file: null
+      - path: /.well-known/agent.json
+        status: 400
+        file: null
+
+soft_404_control:
+  path: /.well-known/api-evangelist-control-probe-does-not-exist-9f3a
+  status: 400
+  bytes: 2203
+  note: >-
+    Identical status and byte count to every canonical path probed above (all 400,
+    all 2203 bytes, all the Wix "400 Error: Bad Request" HTML page). This proves the
+    host answers uniformly for unknown /.well-known/ paths and serves no discovery
+    documents at all.
+
+related_surfaces:
+  - note: >-
+      Although the /.well-known/ surface is empty, this host DOES serve two real
+      agent-discovery artifacts at non-well-known paths — /llms.txt (HTTP 200,
+      captured in llms/) and an MCP endpoint at /_api/mcp (HTTP 200, captured in
+      mcp/). Both are Wix platform defaults.

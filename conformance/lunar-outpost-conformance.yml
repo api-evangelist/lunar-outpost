@@ -1,0 +1,119 @@
+generated: '2026-08-25'
+method: probed
+source: >-
+  Anonymous probes of https://www.lunaroutpost.com/_api/mcp, /llms.txt and
+  /robots.txt on 2026-08-25.
+summary: >-
+  Lunar Outpost conforms to two agent-facing conventions, both inherited from its Wix
+  hosting rather than authored by the company: the Model Context Protocol and the
+  llms.txt convention. It asserts no API standard of its own, publishes no compliance
+  certifications, and its market's domain standards are not expressed in any machine
+  -readable contract because it publishes none. No Compliance pointer is emitted.
+
+standards:
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    version: '2025-06-18'
+    evidence: >-
+      POST initialize to https://www.lunaroutpost.com/_api/mcp returned HTTP 200 with
+      protocolVersion "2025-06-18", a capabilities object declaring tools.listChanged
+      and logging, and serverInfo naming the site. tools/list returned 9 tools each
+      carrying a valid inputSchema. Verified by probe.
+
+  - id: llms-txt
+    name: llms.txt
+    conforms: true
+    evidence: >-
+      https://www.lunaroutpost.com/llms.txt returns HTTP 200, text/plain, 3344 bytes,
+      with the conventional H1 title, blockquote summary and sectioned link lists.
+      Captured verbatim to llms/lunar-outpost-llms.txt.
+
+  - id: json-rpc-2.0
+    name: JSON-RPC 2.0
+    conforms: true
+    evidence: >-
+      All observed responses carry "jsonrpc":"2.0" with matching request ids; errors
+      use the JSON-RPC error object shape.
+
+  - id: rfc9116
+    name: security.txt (RFC 9116)
+    conforms: false
+    evidence: >-
+      /.well-known/security.txt returns HTTP 400 (Wix catch-all page, byte-identical
+      to a control probe of a nonexistent path). No security.txt is served.
+
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: >-
+      No authorization server metadata at /.well-known/oauth-authorization-server
+      (HTTP 400). The MCP endpoint requires no authentication.
+
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: '/.well-known/openid-configuration returns HTTP 400. No OIDC surface.'
+
+  - id: rfc9457
+    name: Problem Details for HTTP APIs (RFC 9457)
+    conforms: false
+    evidence: >-
+      No application/problem+json responses; the surface uses JSON-RPC error objects.
+
+  - id: openapi
+    name: OpenAPI
+    conforms: false
+    evidence: >-
+      No OpenAPI document found. Probed /openapi.json, /openapi.yaml, /swagger.json,
+      /v1/openapi.json, /api-docs, /docs, /redoc on www.lunaroutpost.com — all
+      returned HTTP 400 or 404 HTML. No api., developer. or docs. subdomain resolves.
+
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json both return HTTP 400
+      catch-all HTML. No agent card is served; per pipeline policy no a2a/ artifact
+      was authored.
+
+domain_standard_conformance:
+  applicable: false
+  detail: >-
+    Lunar Outpost operates in space robotics and defence mission operations. Relevant
+    interoperability standards for that market — CCSDS telemetry/telecommand, the NASA
+    LTV interface specifications, STANAG/JAUS style robotic control interfaces — are
+    contract-negotiated with government customers, not published. No domain standard is
+    declared in any machine-readable contract because the company publishes none.
+    Reward-only check: recorded as not applicable, not as a failure.
+
+compliance_certifications: []
+compliance_note: >-
+  No trust center, SOC 2, ISO 27001, FedRAMP or other certification page was found by
+  probe. probe-security-programs.py returned vdp=none trust=none. No Compliance or
+  TrustCenter pointer is emitted.
+
+ai_access_posture:
+  finding: contradictory
+  detail: >-
+    Worth recording as an agent-differential observation. The site's robots.txt
+    explicitly DISALLOWS the major AI crawlers — ClaudeBot, GPTBot, CCBot, Bytespider,
+    Amazonbot, Google-Extended, Applebot-Extended, meta-externalagent and PetalBot are
+    each given "Disallow: /" — and sets Cloudflare content signals
+    "search=yes,ai-train=no,use=reference". At the same time the site's own llms.txt
+    invites agents in, stating the site "supports the Model Context Protocol (MCP) for
+    agentic AI access" and that "AI agents can connect directly to retrieve live,
+    up-to-date site content - no scraping required", with no authentication. Both files
+    are Wix-generated defaults, which is very likely why they disagree. The deployed
+    posture is coherent if read as intent: crawl-and-train is refused, live structured
+    agent access is offered.
+  evidence:
+    - url: https://www.lunaroutpost.com/robots.txt
+      status: 200
+      note: 'Disallow: / for ClaudeBot, GPTBot, CCBot and six more; ai-train=no'
+    - url: https://www.lunaroutpost.com/llms.txt
+      status: 200
+      note: 'Advertises unauthenticated MCP endpoint for agentic AI access'
+    - url: https://www.lunaroutpost.com/_api/mcp
+      status: 200
+      note: 'Endpoint answers anonymous agents, confirming the llms.txt offer is real'

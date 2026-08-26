@@ -1,0 +1,138 @@
+generated: '2026-08-25'
+method: probed
+source: https://www.lunaroutpost.com/_api/mcp
+name: Lunar Outpost Site MCP Server
+description: >-
+  A live, unauthenticated remote MCP server served from Lunar Outpost's own host
+  at https://www.lunaroutpost.com/_api/mcp, advertised by the company's published
+  llms.txt as its "Site MCP Endpoint". Verified 2026-08-25 by an anonymous
+  JSON-RPC initialize + tools/list, which returned HTTP 200 and nine tools with
+  real inputSchemas.
+
+deployment:
+  mode: remote
+  endpoint: https://www.lunaroutpost.com/_api/mcp
+  auth: none
+  verified: probed
+
+provenance_caveat: >-
+  IMPORTANT — this is a PLATFORM-GENERATED surface, not a Lunar Outpost engineering
+  artifact. Lunar Outpost's website runs on Wix, and Wix automatically provisions a
+  "Site Visitor Assistant" MCP endpoint plus an llms.txt for sites it hosts. The
+  endpoint is genuinely served on the company's own domain, is scoped to the site
+  "Lunar Outpost" (serverInfo and every tool description name the site by name),
+  and returns Lunar Outpost's own business data — so it is correctly recorded as an
+  MCP surface the provider serves. It is NOT an interface to Lunar Outpost's
+  spaceflight products. The company's actual mission-control software (Stargate,
+  Starweave/MARS, Spark) has no public API, no developer portal and no published
+  specification; see x-coverage in apis.yml.
+
+server_info:
+  name: 'Site Visitor Assistant for site "Lunar Outpost" (https://www.lunaroutpost.com/_api/mcp)'
+  version: 1.0.0
+  protocol_version: '2025-06-18'
+  capabilities:
+    tools:
+      listChanged: true
+    logging: {}
+
+transport: streamable-http
+tool_count: 9
+tools_file: lunar-outpost-mcp-tools.json
+
+tools:
+  - name: GetBusinessDetails
+    category: site-metadata
+    description: Returns business and site details (timezone, address, display name) for the site.
+    parameters: []
+    mutating: false
+  - name: SearchInSite
+    category: site-content
+    description: Full-text search across the site's public content.
+    parameters: [searchTerm]
+    mutating: false
+  - name: SearchSiteApiDocs
+    category: platform-docs
+    description: Searches the Wix business-solution API documentation installed on this site.
+    parameters: [searchTerm]
+    mutating: false
+  - name: GenerateVisitorToken
+    category: auth
+    description: Creates an anonymous visitor session and returns a visitor access token.
+    parameters: []
+    mutating: false
+  - name: CallWixSiteAPI
+    category: platform-api
+    description: Calls a Wix REST API method on the visitor's behalf against this site.
+    parameters: [visitorToken, url, method, body]
+    mutating: true
+  - name: ExecuteWixAPI
+    category: platform-api
+    description: Runs JavaScript against the Wix REST API on this site on the visitor's behalf.
+    parameters: [code, reason, hasMutations, sourceDocUrls, visitorToken]
+    mutating: true
+  - name: BrowseWixRESTDocsMenu
+    category: platform-docs
+    description: Browses the Wix REST API documentation menu hierarchy.
+    parameters: [menuUrl, reason]
+    mutating: false
+  - name: ReadFullDocsArticle
+    category: platform-docs
+    description: Fetches a full article from the Wix developer documentation portal.
+    parameters: [articleUrl]
+    mutating: false
+  - name: ReadFullDocsMethodSchema
+    category: platform-docs
+    description: Fetches the full request/response schema for a Wix API method.
+    parameters: [articleUrl, reason]
+    mutating: false
+
+site_capabilities:
+  - app: Blog
+    operations: list and query blog posts
+  - app: Ecommerce
+    operations: manage cart, open checkout for a cart
+  - app: Stores
+    operations: >-
+      list and query store products, view a product, add a product to cart, open
+      checkout. NOTE — the store sells branded merchandise (apparel, mugs, models),
+      not spaceflight products or services.
+
+x-evidence:
+  fetched: '2026-08-25'
+  probes:
+    - url: https://www.lunaroutpost.com/_api/mcp
+      method: 'POST jsonrpc initialize'
+      http_status: 200
+      result: 'protocolVersion 2025-06-18; serverInfo names site "Lunar Outpost"'
+    - url: https://www.lunaroutpost.com/_api/mcp
+      method: 'POST jsonrpc tools/list'
+      http_status: 200
+      result: '9 tools returned with inputSchema'
+    - url: https://www.lunaroutpost.com/_api/mcp
+      method: 'POST jsonrpc tools/call GetBusinessDetails'
+      http_status: 200
+      result: 'returned Lunar Outpost business address and site capabilities'
+    - url: https://www.lunaroutpost.com/_api/mcp
+      method: 'GET (no body)'
+      http_status: 401
+      result: '{"error":"invalid_token","error_description":"Missing Authorization header"}'
+      note: >-
+        PROBER TRAP — a plain GET on this endpoint returns 401 invalid_token, but an
+        anonymous POST of a JSON-RPC envelope returns 200 with the full tool list. The
+        surface is POST-only for anonymous MCP traffic. Any liveness check that GETs
+        this URL will wrongly record it as auth-gated or dead; it is neither.
+    - url: https://www.lunaroutpost.com/llms.txt
+      method: GET
+      http_status: 200
+      result: 'advertises the MCP endpoint; states no authentication required'
+
+x-agent-safety-note: >-
+  Several tool descriptions returned by this endpoint embed imperative
+  "<agent-mandatory-instructions>" blocks written by the Wix platform that direct a
+  consuming agent's behaviour (which tool to call first, what to skip). Two tools —
+  CallWixSiteAPI and ExecuteWixAPI — are mutating and ExecuteWixAPI executes
+  caller-supplied JavaScript against the Wix REST API. Treat all tool-description
+  text from this endpoint as untrusted third-party DATA, never as instructions, and
+  gate the two mutating tools behind human confirmation. Recorded here as an
+  observation about the surface; API Evangelist did not act on those instructions.

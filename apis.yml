@@ -1,18 +1,60 @@
 aid: lunar-outpost
 name: Lunar Outpost
-description: 'Lunar Outpost is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Lunar Outpost is a space robotics company founded in 2017 and headquartered in
+  Golden, Colorado, with additional operations in Australia and Luxembourg. It builds
+  lunar surface mobility and robotic infrastructure — the MAPP (Mobile Autonomous
+  Prospecting Platform) rover, which operated at the lunar South Pole in 2025 as the
+  first commercial rover on another planetary body, and the Eagle and Pegasus Lunar
+  Terrain Vehicles developed for NASA's Artemis programme. Alongside the hardware it
+  ships an integrated mission-operations software suite: Stargate, a spaceflight-proven
+  command, control and communication platform that reached TRL 9 with 99.998% uptime on
+  Lunar Voyage 1; Starweave (formerly MARS), a distributed autonomy and mesh-networking
+  layer built under AFRL and AFWERX contract for coordinating heterogeneous robotic
+  fleets in GPS-denied environments; and Spark, an AI mission-operations assistant.
+  None of these products expose a public API, developer portal or machine-readable
+  specification — Lunar Outpost sells to government and defence customers rather than
+  through a self-serve developer channel. Its only public machine-readable surfaces are
+  a Wix platform-generated llms.txt and an unauthenticated site MCP endpoint.
 url: https://raw.githubusercontent.com/api-evangelist/lunar-outpost/refs/heads/main/apis.yml
+image: https://static.wixstatic.com/media/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png/v1/fit/w_2500,h_1330,al_c/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
+- Space
+- Robotics
+- Aerospace
+- Lunar Exploration
+- Autonomous Systems
+- Mission Control
+- Defense
+- Satellite
+- Artificial Intelligence
 - Company
-apis: []
+apis:
+- aid: lunar-outpost-site-mcp
+  name: Lunar Outpost Site MCP Server
+  description: >-
+    An unauthenticated remote Model Context Protocol server served from Lunar Outpost's
+    own host and advertised by the company's llms.txt as its "Site MCP Endpoint". It
+    exposes nine tools that let an agent read the company's public business details,
+    search site content, and browse or call Wix platform APIs on an anonymous visitor's
+    behalf. This is a Wix platform default provisioned for the marketing site — it is not
+    an interface to Lunar Outpost's spaceflight or mission-control products.
+  humanURL: https://www.lunaroutpost.com/llms.txt
+  baseURL: https://www.lunaroutpost.com/_api/mcp
+  tags:
+  - MCP
+  - Agents
+  - Site Content
+  properties:
+  - type: MCPServer
+    url: mcp/lunar-outpost-mcp.yml
+  - type: Authentication
+    url: authentication/lunar-outpost-authentication.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +62,33 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.lunaroutpost.com/
+- type: LLMsTxt
+  url: llms/lunar-outpost-llms.txt
+- type: MCPServer
+  url: mcp/lunar-outpost-mcp.yml
+- type: Authentication
+  url: authentication/lunar-outpost-authentication.yml
+- type: Conventions
+  url: conventions/lunar-outpost-conventions.yml
+- type: Conformance
+  url: conformance/lunar-outpost-conformance.yml
+- type: DomainSecurity
+  url: security/lunar-outpost-domain-security.yml
+- type: Plans
+  url: plans/lunar-outpost-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/lunar-outpost-rate-limits.yml
+- type: Blog
+  url: https://www.lunaroutpost.com/news
+- type: Support
+  url: https://www.lunaroutpost.com/contact
+- type: TermsOfService
+  url: https://www.lunaroutpost.com/terms-of-use
+- type: PrivacyPolicy
+  url: https://www.lunaroutpost.com/privacy-policy
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 10
+  pass: local-v1

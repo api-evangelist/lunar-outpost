@@ -1,0 +1,111 @@
+generated: '2026-08-25'
+method: probed
+source: https://www.lunaroutpost.com/_api/mcp
+summary: >-
+  Lunar Outpost publishes no REST API and therefore no HTTP API conventions of its
+  own. Everything recorded here is the observed runtime behaviour of the single
+  public surface — the Wix-provisioned site MCP endpoint — established by anonymous
+  probe on 2026-08-25. These are PLATFORM conventions, not conventions Lunar Outpost
+  designed or documents.
+
+auth_style:
+  style: none
+  detail: No credential required; see authentication/lunar-outpost-authentication.yml.
+
+protocol:
+  style: JSON-RPC 2.0 over streamable HTTP (MCP)
+  version: '2025-06-18'
+  content_type: application/json
+  accept: application/json, text/event-stream
+  session:
+    header: mcp-session-id
+    observed: ddf0d525-…
+    note: Server issues a session id per initialize; also sets an XSRF-TOKEN cookie.
+
+idempotency:
+  supported: false
+  status: na
+  detail: >-
+    No idempotency key header, parameter or documented retry semantics exists on this
+    surface. The MCP tool set has no bespoke write operations of Lunar Outpost's own;
+    the two mutating tools proxy generic Wix platform APIs. NOT marked na for lack of
+    a write surface — a write surface does exist — but no idempotency mechanism is
+    offered for it.
+
+pagination:
+  supported: unknown
+  detail: >-
+    Not exposed at the MCP tool layer. Any pagination belongs to the underlying Wix
+    REST APIs reached through CallWixSiteAPI, which are Wix's contract, not Lunar
+    Outpost's.
+
+versioning:
+  scheme: MCP protocol version negotiation
+  current: '2025-06-18'
+  detail: >-
+    Version is negotiated in the initialize handshake. There is no product version,
+    no dated API release channel and no published version policy.
+
+error_envelope:
+  style: JSON-RPC 2.0 error object
+  format: '{ "jsonrpc": "2.0", "id": <n>, "error": { "code": <int>, "message": <string> } }'
+  rfc9457: false
+  detail: >-
+    Standard JSON-RPC error shape. No provider-specific error code registry is
+    published, so no errors/ catalog was derived — there is nothing to derive it from.
+
+rate_limit_signaling:
+  headers_observed: []
+  detail: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header appeared on any observed 200
+    response. See rate-limits/lunar-outpost-rate-limits.yml.
+
+request_tracing:
+  header: x-wix-request-id
+  observed: '1787705304.4721567598411405'
+  detail: >-
+    A platform request id is returned on every response and is the only correlation
+    handle available for support. Note it identifies a Wix request, and Lunar Outpost
+    publishes no support channel that accepts it.
+
+reversibility:
+  grade: none
+  status: undocumented
+  detail: >-
+    The surface has two mutating tools — CallWixSiteAPI and ExecuteWixAPI — so it is
+    NOT read-only and reversibility is not `na`. But NO reversal operation and NO
+    reversal window is documented anywhere by Lunar Outpost or advertised by the
+    endpoint. The reachable mutations are cart and checkout actions on the branded
+    merchandise store, plus arbitrary caller-supplied JavaScript executed against the
+    Wix REST API via ExecuteWixAPI, whose blast radius is bounded only by the
+    anonymous visitor token's scope.
+  write_surfaces:
+    - operation: CallWixSiteAPI
+      reversal_operation: null
+      window: null
+      note: >-
+        No documented undo. Cart mutations are conventionally reversible by removing
+        line items, but Lunar Outpost publishes no statement to that effect, so none
+        is asserted here.
+    - operation: ExecuteWixAPI
+      reversal_operation: null
+      window: null
+      note: >-
+        Executes caller-supplied JavaScript and self-declares mutation intent via a
+        `hasMutations` flag. No rollback, no dry-run and no documented window.
+  agent_guidance: >-
+    An agent cannot establish from any published source whether an action taken here
+    can be undone. Gate both mutating tools behind human confirmation.
+
+dry_run_mode:
+  supported: false
+  status: undocumented
+  detail: >-
+    ExecuteWixAPI takes a `hasMutations` boolean, but that is a caller-asserted
+    declaration of intent, not a server-enforced rehearsal mode. No dry-run exists.
+
+cross_references:
+  authentication: authentication/lunar-outpost-authentication.yml
+  rate_limits: rate-limits/lunar-outpost-rate-limits.yml
+  conformance: conformance/lunar-outpost-conformance.yml
+  mcp: mcp/lunar-outpost-mcp.yml

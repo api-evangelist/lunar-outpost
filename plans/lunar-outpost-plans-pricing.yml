@@ -1,0 +1,36 @@
+generated: '2026-08-25'
+method: searched
+source: https://www.lunaroutpost.com/
+summary: >-
+  Lunar Outpost publishes NO API plans, tiers or developer pricing of any kind. It has
+  no developer programme to price. Commercial engagement runs through payload
+  reservation and direct contract with government and defence customers, quoted per
+  mission rather than listed. The site's only listed prices are branded merchandise.
+plan_count: 0
+plans: []
+pricing_model: contract-negotiated
+pricing_url: null
+detail: >-
+  Searched the full page inventory from the site's own sitemap — /services, /missions,
+  /software, /mapp, /pegasus, /ltv, /lunar-voyage-1, /about, /contact — and found no
+  pricing page, no plans page, no tier table and no rate card. The site's commercial
+  call to action is "Reserve Payload Space", which routes to a contact form rather than
+  a priced catalogue. The Wix store attached to the domain
+  (/store-products-sitemap.xml) sells apparel, mugs and models; that is merchandise, not
+  an API or service plan, and is deliberately excluded from plan_count.
+free_tier:
+  available: true
+  detail: >-
+    Not a plan, but worth noting for agents: the site MCP endpoint is reachable with no
+    account, no key and no payment. It is free because it is an ungoverned platform
+    default, not because a free tier was designed.
+evidence:
+  - url: https://www.lunaroutpost.com/services
+    status: 200
+    note: 'Services page describes offerings; states no prices'
+  - url: https://www.lunaroutpost.com/contact
+    status: 200
+    note: 'Commercial route is a contact form'
+  - url: https://www.lunaroutpost.com/pricing
+    status: 404
+    note: 'No pricing page exists'

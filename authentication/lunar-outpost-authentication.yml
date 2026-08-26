@@ -1,0 +1,63 @@
+generated: '2026-08-25'
+method: probed
+source: https://www.lunaroutpost.com/_api/mcp
+summary: >-
+  Lunar Outpost publishes no authenticated developer API, so there is no API key
+  issuance, OAuth client registration or token endpoint to document. The single
+  public machine-readable surface — the site MCP endpoint — requires NO
+  authentication at all. This was established by probe, not from documentation:
+  an anonymous JSON-RPC initialize and tools/list both returned HTTP 200 with no
+  credential presented, and the company's own llms.txt states "No authentication
+  required to connect to the MCP endpoint".
+
+schemes: []
+
+surfaces:
+  - surface: Site MCP endpoint
+    url: https://www.lunaroutpost.com/_api/mcp
+    transport: streamable-http (JSON-RPC 2.0)
+    auth_required: false
+    scheme: none
+    evidence:
+      - probe: 'POST tools/list with no Authorization header'
+        http_status: 200
+      - probe: 'POST initialize with no Authorization header'
+        http_status: 200
+      - probe: 'GET with no Authorization header'
+        http_status: 401
+        note: >-
+          Returns {"error":"invalid_token"}. This is a METHOD artefact, not an auth
+          requirement — the same URL answers an anonymous POST with 200. Do not read
+          this 401 as a credential gate.
+      - source: https://www.lunaroutpost.com/llms.txt
+        quote: 'No authentication required to connect to the MCP endpoint'
+    notes: >-
+      A per-session visitor token exists but it is NOT a credential a caller must
+      obtain out of band — the endpoint mints it anonymously via the
+      GenerateVisitorToken tool, and it is required only for the two mutating tools
+      (CallWixSiteAPI, ExecuteWixAPI). The server also sets an XSRF-TOKEN cookie and
+      returns an mcp-session-id header. Access is limited by scope, not by identity:
+      only public site information is reachable.
+
+oauth_discovery:
+  probed: true
+  results:
+    - url: https://www.lunaroutpost.com/.well-known/oauth-authorization-server
+      status: 400
+    - url: https://www.lunaroutpost.com/.well-known/oauth-protected-resource
+      status: 400
+    - url: https://www.lunaroutpost.com/.well-known/openid-configuration
+      status: 400
+  note: >-
+    All three return the Wix catch-all 400 error page, byte-identical to a control
+    probe of a nonexistent path. No OAuth or OIDC discovery metadata is served.
+
+scopes: none
+mutual_tls: false
+api_keys: false
+
+gaps:
+  - >-
+    Lunar Outpost's actual mission-operations products (Stargate, Starweave, Spark)
+    are operated under government and defence contract and expose no public
+    authentication surface. Nothing here describes access to those systems.
