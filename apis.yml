@@ -17,6 +17,17 @@ description: >-
   through a self-serve developer channel. Its only public machine-readable surfaces are
   a Wix platform-generated llms.txt and an unauthenticated site MCP endpoint.
 url: https://raw.githubusercontent.com/api-evangelist/lunar-outpost/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://static.wixstatic.com/media/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png/v1/fit/w_2500,h_1330,al_c/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png
 x-type: company
 x-source: harvest:secondary-market
