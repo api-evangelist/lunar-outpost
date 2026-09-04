@@ -28,6 +28,20 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: open
+  trial: false
+  try_now: false
+  public: true
+  label: Open access
+  confidence: medium
+  source:
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://static.wixstatic.com/media/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png/v1/fit/w_2500,h_1330,al_c/8a6459_c44b42e2b82b44249f6a3a9fa12cd670~mv2.png
 x-type: company
 x-source: harvest:secondary-market
